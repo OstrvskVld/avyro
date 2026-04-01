@@ -1,32 +1,45 @@
-🏥 Avyro — Clinic Online
-Avyro — це інноваційна телемедична платформа, що забезпечує швидкий та безпечний зв'язок між лікарем і пацієнтом. Проєкт реалізований з акцентом на захист персональних даних та стабільність відеозв'язку.
+🏥 Avyro — Health Journey Gamification Platform
+Avyro — це медична платформа, що перетворює рутинну турботу про здоров'я на захопливий процес досягнення цілей. Ми розв'язуємо проблему браку мотивації до регулярних чекапів, впроваджуючи систему нагород, що конвертуються у реальні фінансові бонуси.
 
-Value Proposition: Ми робимо якісну медичну допомогу доступною в один клік, автоматизуючи запис, оплату та консультації.
+Vision: Сформувати у користувачів стійку звичку до профілактики через гру та відчутне позитивне підкріплення.
 
 ✨ Ключові можливості (Features)
-Smart Scheduling: Інтерактивний календар для запису до профільних спеціалістів.
+🏆 Killer-фіча: Gamification Engine
+На відміну від звичайних сервісів запису, Avyro використовує систему "Health Journey":
 
-Video Consultations: Захищені онлайн-дзвінки в реальному часі (WebRTC).
+Миттєві нагороди: Отримання балів та бейджа "Перший крок" одразу після реєстрації.
 
-Instant Payments: Швидка оплата через інтегрований Monobank API.
+Прогресія: Нарахування 100 балів за кожен завершений візит.
 
-Electronic Health Records: Особистий кабінет пацієнта з історією хвороб та призначеннями.
+Фінансова вигода: Безшовна конвертація накопичених балів у реальні знижки або кешбек під час оплати наступних послуг.
 
-Notifications: Автоматичні нагадування про візити через SMS/Email.
+📅 Основний функціонал (MVP Scope)
+Smart Booking: Пошук лікаря за спеціальністю та бронювання слота в один клік.
+
+Role Selection: Окремі кабінети для Пацієнта (контроль здоров'я) та Лікаря (управління потоком пацієнтів).
+
+Appointment Dashboard: Зручний список майбутніх візитів із можливістю скасування.
+
+Secure Payments: Інтегрована система оплати з можливістю використання бонусів.
 
 🛠 Технологічний стек (Tech Stack)
-Frontend
-State Management: Zustand / Redux Toolkit
+Frontend: React 18, TypeScript, SCSS Modules (BEM).
 
-Data Fetching: TanStack Query
+Backend: Python 3.12, FastAPI, Pydantic v2.
 
-Backend
-Validation: Pydantic v2
+Database: Mongo DB .
 
-Database: PostgreSQL 16
+Payment Integration: Monobank API.
 
-📸 Демонстрація (Screenshots / Demo)
-Додайте посилання на Live Demo або скріншоти інтерфейсу в папку /assets/screenshots
+DevOps: ESLint (Airbnb), Prettier, EditorConfig.
+
+🎯 Бізнес-цілі (Business Goals)
+Retention & Engagement: Досягти залученості 60%+ через ігрові механіки.
+
+Monetization: Конверсія 15% у оплачені візити.
+
+Data Integrity: 100% точність ігрових транзакцій та відсутність конфліктів у розкладі.
+
 
 🚀 Початок роботи (Getting Started)
 Prerequisites
@@ -34,43 +47,16 @@ Node.js: v20.x (LTS)
 
 Python: v3.12+
 
-Installation & Running
-Клонуйте репозиторій:
+Quick Start
+Встановлення: npm install (для фронтенду) та pip install -r requirements.txt (для бекенду).
 
-Bash
-git clone https://github.com/OleksandrHelevan/avyro.git
-Налаштування Frontend:
+Налаштування: Скопіюйте .env.example у .env та додайте ваші ключі.
 
-Bash
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
-Налаштування Backend:
+Запуск:
 
-Bash
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --reload
-Environment Variables
-Переконайтеся, що ви заповнили наступні змінні у своєму .env:
+Frontend: npm run dev
 
-VITE_API_URL — адреса вашого бекенду.
-
-MONO_API_TOKEN — ваш персональний токен Monobank API.
-
-📏 Стандарти розробки (Code Quality)
-Для автоматизації контролю якості в проєкті налаштовано:
-
-Linter: ESLint (Airbnb Style Guide).
-
-Formatter: Prettier.
-
-Naming: PascalCase для компонентів, camelCase для функцій, snake_case для БД/API.
-
-Automation: Увімкнено Format on Save для WebStorm та VS Code.
+Backend: uvicorn main:app --reload
 
 👥 Команда (Team)
 Руснак Василь — Frontend Developer (React, TS, SCSS)
