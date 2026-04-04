@@ -27,7 +27,7 @@ Frontend: React 18, TypeScript, SCSS Modules (BEM).
 
 Backend: Python 3.12, FastAPI, Pydantic v2.
 
-Database: Mongo DB .
+Database: Mongo DB.
 
 Payment Integration: Monobank API.
 
@@ -39,7 +39,6 @@ Retention & Engagement: Досягти залученості 60%+ через і
 Monetization: Конверсія 15% у оплачені візити.
 
 Data Integrity: 100% точність ігрових транзакцій та відсутність конфліктів у розкладі.
-
 
 🚀 Початок роботи (Getting Started)
 Prerequisites
@@ -59,12 +58,45 @@ Frontend: npm run dev
 Backend: uvicorn main:app --reload
 
 👥 Команда (Team)
-Руснак Василь — Frontend Developer (React, TS, SCSS)
 
-Островський Владислав — Backend Developer (Python, FastAPI)
+Гелеван Олександр - PM
 
-Невмивана Дарина — QA
+Руснак Василь — Frontend Developer (React)
+
+Островський Владислав — Backend Developer (Python)
+
+Невмивана Дар'я — QA
 
 Федорюк Мірча - DB
 
-Гелеван Олександр - PM
+
+
+---
+
+### Naming Convention
+
+#### Python / FastAPI
+
+* **Файли:** snake_case (booking_service.py, payment_handler.py)
+* **Класи:** PascalCase (UserProfile, RewardCalculator)
+* **Функції / методи:** snake_case (calculate_rewards(), get_upcoming_appointments())
+* **Константи:** UPPER_SNAKE_CASE (MAX_REWARD_POINTS, PAYMENT_TIMEOUT)
+* **Пакети / модулі:** нижній регістр із підкресленням (auth, gamification, dashboard)
+* **Pydantic моделі:** PascalCase (UserCreate, AppointmentResponse)
+
+#### React / TypeScript
+
+* **Файли компонентів:** PascalCase (AppointmentCard.tsx, BookingForm.tsx)
+* **Функціональні компоненти:** PascalCase (BookingDashboard, GamificationBadge)
+* **Хуки:** useCamelCase (useAuth, useRewardPoints)
+* **Змінні та функції:** camelCase (selectedDoctor, fetchAppointments)
+* **Сторінки:** PascalCase + index.tsx у папці (Dashboard/index.tsx)
+* **Стилі / SCSS модулі:** camelCase із префіксом модуля (.bookingForm.module.scss)
+* **Props / Types:** PascalCase (AppointmentProps, UserProfileType)
+
+#### MongoDB
+
+* **Колекції:** нижній регістр із множиною (users, appointments, rewards)
+* **Документи / поля:** camelCase (firstName, lastLogin, rewardPoints)
+* **Індекси:** collection_field_idx (appointments_doctorId_idx)
+* **Схеми Mongoose / Pydantic:** PascalCase (UserSchema, AppointmentSchema)
