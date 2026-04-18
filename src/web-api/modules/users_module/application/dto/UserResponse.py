@@ -18,7 +18,7 @@ class UserResponse(BaseModel):
     role: UserRole
     isActive: bool
 
-    profile: ProfileResponse
+    profile: Optional[ProfileResponse] = None
 
     createdAt: datetime
     updatedAt: datetime

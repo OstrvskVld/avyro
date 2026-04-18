@@ -30,11 +30,10 @@ class User:
         self.deleted_at = deleted_at
 
     def to_dict(self) -> dict:
-        return {
-            "_id": self.id,
+        data = {
             "email": self.email,
             "password": self.password,
-            "role": self.role.value if hasattr(self.role, 'value') else self.role, # Безпечне збереження в БД
+            "role": self.role.value if hasattr(self.role, 'value') else self.role,
             "isActive": self.is_active,
             "profile": self.profile.to_dict() if self.profile else None,
             "createdAt": self.created_at,
@@ -42,6 +41,11 @@ class User:
             "lastLoginAt": self.last_login_at,
             "deletedAt": self.deleted_at,
         }
+
+        if self.id is not None:
+            data["_id"] = self.id
+
+        return data
 
     @staticmethod
     def from_dict(data: dict) -> "User":

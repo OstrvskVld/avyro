@@ -2,6 +2,6 @@ fastapi
 uvicorn[standard]
 ruff
 motor
-passlib[bcrypt]
+bcrypt
 python-jose[cryptography]
 pydantic[email]

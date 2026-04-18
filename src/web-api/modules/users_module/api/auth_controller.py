@@ -11,10 +11,10 @@ from modules.users_module.infrastructure.persistence.UserRepository import UserR
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 def get_auth_service() -> AuthService:
-    return AuthService(UserRepository(db.users))
+    return AuthService(UserRepository(db["Users"]))
 
 def get_user_service() -> UserService:
-    return UserService(UserRepository(db.users))
+    return UserService(UserRepository(db["Users"]))
 
 @router.post("/login", response_model=LoginResponse)
 async def login(
@@ -23,13 +23,9 @@ async def login(
 ):
     return auth_service.login(request)
 
-
 @router.post("/sign-up", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register(
     request: CreateUserRequest,
     user_service: UserService = Depends(get_user_service)
 ):
-    print(f"DEBUG: Довжина пароля: {len(request.password)} символів")
-    print(f"DEBUG: Пароль починається на: {request.password[:15]}...")
-
     return user_service.create_user(request)
