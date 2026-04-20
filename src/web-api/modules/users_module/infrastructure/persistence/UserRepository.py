@@ -1,7 +1,7 @@
-from typing import Optional, List
+from datetime import datetime, timezone
+from typing import Optional
 from bson import ObjectId
 from pymongo.collection import Collection
-
 from modules.users_module.domains.user.User import User
 
 
@@ -13,11 +13,10 @@ class UserRepository:
         data = user.to_dict()
         result = self.collection.insert_one(data)
         user.id = result.inserted_id
-
         return user
 
-    def get_by_id(self, user_id: str) -> Optional[User]:
-        doc = self.collection.find_one({"_id": ObjectId(user_id)})
+    def get_by_id(self, user_id: ObjectId) -> Optional[User]:
+        doc = self.collection.find_one({"_id": user_id})
         if not doc:
             return None
         return User.from_dict(doc)
@@ -28,38 +27,19 @@ class UserRepository:
             return None
         return User.from_dict(doc)
 
-    def get_all(self) -> List[User]:
-        docs = self.collection.find()
-        return [User.from_dict(doc) for doc in docs]
-
-    def update(self, user: User) -> bool:
-        if not user.id:
-            return False
-
-        data = user.to_dict()
-        user_id = data.pop("_id")
-
-        result = self.collection.update_one(
+    def update_profile(self, user_id: ObjectId, profile: dict) -> None:
+        self.collection.update_one(
             {"_id": user_id},
-            {"$set": data}
-        )
-
-        return result.modified_count > 0
-
-    def soft_delete(self, user_id: str) -> bool:
-        from datetime import datetime
-
-        result = self.collection.update_one(
-            {"_id": ObjectId(user_id)},
             {
                 "$set": {
-                    "deletedAt": datetime.utcnow()
+                    "profile": profile,
+                    "updatedAt": datetime.now(timezone.utc)
                 }
             }
         )
 
-        return result.modified_count > 0
-
-    def delete(self, user_id: str) -> bool:
-        result = self.collection.delete_one({"_id": ObjectId(user_id)})
-        return result.deleted_count > 0
+    def update_last_login(self, user_id: ObjectId, login_time: datetime):
+        self.collection.update_one(
+            {"_id": user_id},
+            {"$set": {"lastLoginAt": login_time}}
+        )
