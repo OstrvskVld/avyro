@@ -3,10 +3,8 @@ from modules.users_module.application.dto.LoginResponse import LoginResponse
 from modules.users_module.infrastructure.persistence.UserRepository import UserRepository
 from config.security import verify_password, create_access_token
 
-
 class InvalidCredentialsException(Exception):
     pass
-
 
 class AuthService:
     def __init__(self, user_repository: UserRepository):
@@ -29,5 +27,6 @@ class AuthService:
         return LoginResponse(
             accessToken=token,
             role=role_str,
-            expiresAt=exp
+            expiresAt=exp,
+            userId=str(user.id)
         )
