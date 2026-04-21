@@ -1,30 +1,34 @@
-from fastapi import APIRouter, Depends, HTTPException
-from modules.users_module.application.dto.UserResponse import UserResponse
-from modules.users_module.application.services.UserService import UserService
+from fastapi import APIRouter, Depends
 from config.db import db
 from modules.users_module.infrastructure.persistence.UserRepository import UserRepository
+from modules.users_module.application.services.UserService import UserService
+
+from modules.users_module.application.dto.AddProfilePatientRequest import AddPatientProfileRequest
+from modules.users_module.application.dto.PatientResponse import PatientResponse
+
+from config.security import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-def get_user_service() -> UserService:
-    return UserService(UserRepository(db.users))
 
-@router.get("/{user_id}", response_model=UserResponse)
-async def get_user_by_id(
+def get_user_service():
+    return UserService(UserRepository(db["Users"]))
+
+
+@router.get("/patients/{user_id}", response_model=PatientResponse)
+def get_patient_profile(
     user_id: str,
-    service: UserService = Depends(get_user_service)
+    _=Depends(get_current_user),
+    service: UserService = Depends(get_user_service),
 ):
-    user = service.get_user_by_id(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return service.get_patient_profile(user_id)
 
-@router.get("/email/{email}", response_model=UserResponse)
-async def get_user_by_email(
-    email: str,
-    service: UserService = Depends(get_user_service)
+
+@router.patch("/patients/{user_id}", response_model=PatientResponse)
+def patch_patient_profile(
+    user_id: str,
+    request: AddPatientProfileRequest,
+    _=Depends(get_current_user),
+    service: UserService = Depends(get_user_service),
 ):
-    user = service.get_user_by_email(email)
-    if not user:
-        raise HTTPException(status_code=404, detail="User with this email not found")
-    return user
+    return service.patch_patient_profile(user_id, request)

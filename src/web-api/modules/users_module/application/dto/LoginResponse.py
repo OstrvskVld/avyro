@@ -5,3 +5,4 @@ class LoginResponse(BaseModel):
     tokenType: str = "bearer"
     role: str
     expiresAt: int
+    userId: str

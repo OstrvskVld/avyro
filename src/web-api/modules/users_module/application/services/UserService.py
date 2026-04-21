@@ -1,53 +1,40 @@
 from datetime import datetime, UTC
-from typing import Optional
 from bson import ObjectId
 
-from modules.users_module.application.dto.CreateUserRequest import CreateUserRequest
-from modules.users_module.application.dto.UserResponse import UserResponse, ProfileResponse
 from modules.users_module.domains.user.User import User
 from modules.users_module.domains.user.Profile import Profile
-from modules.users_module.infrastructure.persistence.UserRepository import UserRepository
+
+from modules.users_module.application.mapper.UserMapper import UserMapper
+from modules.users_module.api.exception.exceptions import (
+    UserNotFoundException,
+    ForbiddenException,
+    InvalidUserIdException,
+    UserAlreadyExistsException
+)
+
 from config.security import hash_password
 
-class UserAlreadyExistsException(Exception):
-    pass
 
 class UserService:
-    def __init__(self, user_repository: UserRepository):
+    def __init__(self, user_repository):
         self.user_repository = user_repository
 
-    def _to_response(self, user: User) -> UserResponse:
-        profile_response = None
+    def _to_object_id(self, user_id: str) -> ObjectId:
+        try:
+            return ObjectId(user_id)
+        except Exception:
+            raise InvalidUserIdException("Invalid user id")
 
-        if user.profile:
-            profile_response = ProfileResponse(
-                fullName=user.profile.full_name,
-                phone=user.profile.phone,
-                specializationId=str(user.profile.specialization_id)
-                if user.profile.specialization_id else None,
-                avatarUrl=user.profile.avatar_url,
-            )
-
-        return UserResponse(
-            _id=str(user.id),
-            email=user.email,
-            role=user.role,
-            isActive=user.is_active,
-            profile=profile_response,
-            createdAt=user.created_at,
-            updatedAt=user.updated_at,
-            lastLoginAt=user.last_login_at,
-        )
-
-    def create_user(self, request: CreateUserRequest) -> UserResponse:
-        if self.user_repository.get_by_email(request.email):
-            raise UserAlreadyExistsException(f"Email {request.email} is taken")
+    def create_user(self, request):
+        existing = self.user_repository.get_by_email(request.email)
+        if existing:
+            raise UserAlreadyExistsException("Email already exists")
 
         now = datetime.now(UTC)
 
-        domain_profile = None
+        profile = None
         if request.profile:
-            domain_profile = Profile(
+            profile = Profile(
                 full_name=request.profile.fullName,
                 phone=request.profile.phone,
                 specialization_id=ObjectId(request.profile.specializationId)
@@ -57,21 +44,51 @@ class UserService:
 
         user = User(
             email=request.email,
-            password=hash_password(request.password),  # Хешуємо 1 раз
+            password=hash_password(request.password),
             role=request.role,
             is_active=request.isActive,
-            profile=domain_profile,
+            profile=profile,
             created_at=now,
             updated_at=now,
         )
 
-        saved_user = self.user_repository.create(user)
-        return self._to_response(saved_user)
+        saved = self.user_repository.create(user)
+        return UserMapper.to_user_response(saved)
 
-    def get_user_by_id(self, user_id: str) -> Optional[UserResponse]:
-        user = self.user_repository.get_by_id(user_id)
-        return self._to_response(user) if user else None
+    def get_patient_profile(self, user_id: str):
+        uid = self._to_object_id(user_id)
 
-    def get_user_by_email(self, email: str) -> Optional[UserResponse]:
-        user = self.user_repository.get_by_email(email)
-        return self._to_response(user) if user else None
+        user = self.user_repository.get_by_id(uid)
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        if UserMapper.normalize_role(user.role) != "PATIENT":
+            raise ForbiddenException("Not a patient")
+
+        return UserMapper.to_patient_response(user)
+
+    def patch_patient_profile(self, user_id: str, request):
+        uid = self._to_object_id(user_id)
+
+        user = self.user_repository.get_by_id(uid)
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        if UserMapper.normalize_role(user.role) != "PATIENT":
+            raise ForbiddenException("Not a patient")
+
+        if user.profile is None:
+            user.profile = Profile(full_name="")
+
+        if request.fullName:
+            user.profile.full_name = request.fullName
+        if request.phone:
+            user.profile.phone = request.phone
+        if request.avatarUrl:
+            user.profile.avatar_url = request.avatarUrl
+
+        self.user_repository.update_profile(uid, user.profile.to_dict())
+
+        updated = self.user_repository.get_by_id(uid)
+
+        return UserMapper.to_patient_response(updated)

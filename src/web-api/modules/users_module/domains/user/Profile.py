@@ -25,9 +25,13 @@ class Profile:
 
     @staticmethod
     def from_dict(data: dict) -> "Profile":
+        if not data:
+            return None
+
         return Profile(
             full_name=data.get("fullName"),
             phone=data.get("phone"),
-            specialization_id=data.get("specializationId"),
+            specialization_id=ObjectId(data["specializationId"])
+            if data.get("specializationId") else None,
             avatar_url=data.get("avatarUrl"),
         )
