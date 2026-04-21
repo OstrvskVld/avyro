@@ -37,3 +37,13 @@ export interface SignUpResponse {
   updatedAt: Date;
   lastLoginAt: Date;
 }
+export interface GetPatientResponse {
+  _id: string;
+  email: string;
+  isActive: boolean;
+  fullName: string;
+  phone: string;
+  avatarUrl: string;
+  createdAt: Date;
+  lastLoginAt: Date;
+}

@@ -1,9 +1,12 @@
-import type {LoginRequest, LoginResponse, SignUpRequest, SignUpResponse} from "../types.ts";
+import type {LoginRequest, LoginResponse, SignUpRequest, SignUpResponse, GetPatientResponse} from "../types.ts";
 import {apiClient} from "../../../services/apiService.ts";
+
 
 export const userApiClient = {
   login: async (request: LoginRequest) =>
-    apiClient.post<LoginResponse>('/auth/login', request),
+    apiClient.post<LoginResponse>('/login', request),
   signUp: async (request: SignUpRequest) =>
-    apiClient.post<SignUpResponse>('/auth/sign-up', request),
+    apiClient.post<SignUpResponse>('/sign-up', request),
+  getPatientById: async (id: string) =>
+    apiClient.get<GetPatientResponse>(`/users/patients/${id}`),
 }
