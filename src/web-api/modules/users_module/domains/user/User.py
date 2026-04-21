@@ -1,8 +1,10 @@
 from typing import Optional
 from bson import ObjectId
 from datetime import datetime
-from modules.users_module.domains.user.UserRole import UserRole
+
 from modules.users_module.domains.user.Profile import Profile
+from modules.users_module.domains.user.UserRole import UserRole
+
 
 class User:
     def __init__(
@@ -33,7 +35,7 @@ class User:
         data = {
             "email": self.email,
             "password": self.password,
-            "role": self.role.value if hasattr(self.role, 'value') else self.role,
+            "role": self.role.value if hasattr(self.role, "value") else self.role,
             "isActive": self.is_active,
             "profile": self.profile.to_dict() if self.profile else None,
             "createdAt": self.created_at,
@@ -42,20 +44,23 @@ class User:
             "deletedAt": self.deleted_at,
         }
 
-        if self.id is not None:
+        if self.id:
             data["_id"] = self.id
 
         return data
 
     @staticmethod
     def from_dict(data: dict) -> "User":
+        if not data:
+            return None
+
         return User(
             _id=data.get("_id"),
             email=data.get("email"),
             password=data.get("password"),
             role=data.get("role"),
             is_active=data.get("isActive"),
-            profile=Profile.from_dict(data["profile"]) if data.get("profile") else None,
+            profile=Profile.from_dict(data.get("profile")),
             created_at=data.get("createdAt"),
             updated_at=data.get("updatedAt"),
             last_login_at=data.get("lastLoginAt"),

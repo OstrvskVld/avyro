@@ -8,7 +8,7 @@ from modules.users_module.application.services.UserService import UserService
 from config.db import db
 from modules.users_module.infrastructure.persistence.UserRepository import UserRepository
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(prefix="", tags=["Auth"])
 
 def get_auth_service() -> AuthService:
     return AuthService(UserRepository(db["Users"]))
