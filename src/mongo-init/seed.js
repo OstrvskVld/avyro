@@ -1,8 +1,3 @@
-// Collections: PascalCase
-// Fields: camelCase
-// Enum values: UPPER_CASE
-// Run with: mongosh "mongodb://localhost:27017/avyro" mongo_setup.js
-
 // Optional cleanup for repeatable local runs:
 // db.Users.drop();
 // db.Specializations.drop();
